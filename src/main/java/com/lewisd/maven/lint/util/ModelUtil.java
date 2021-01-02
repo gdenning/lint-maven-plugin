@@ -7,6 +7,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.lewisd.maven.lint.model.Coordinates;
+import com.lewisd.maven.lint.model.ExtDependency;
+import com.lewisd.maven.lint.model.ExtPlugin;
+import com.lewisd.maven.lint.model.ObjectWithPath;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.InputLocation;
@@ -17,13 +21,9 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.lewisd.maven.lint.model.Coordinates;
-import com.lewisd.maven.lint.model.ExtDependency;
-import com.lewisd.maven.lint.model.ExtPlugin;
-import com.lewisd.maven.lint.model.ObjectWithPath;
-
 public class ModelUtil {
 
+    private static final String REGEX_LOCATION_AT_END_OF_STRING = "Location$";
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[] {};
     @SuppressWarnings("rawtypes")
     private static final Class[] EMPTY_CLASS_ARRAY = new Class[] {};
@@ -156,17 +156,37 @@ public class ModelUtil {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private Map<Object, InputLocation> getLocations(final Object modelObject, final Class klass) {
+        final Map<Object, InputLocation> locations = new HashMap();
+        try {
+            for (Field field : klass.getDeclaredFields()) {
+                if (field.getType().equals(InputLocation.class)) {
+                    field.setAccessible(true);
+                    String fieldName = field.getName().replaceAll(REGEX_LOCATION_AT_END_OF_STRING, "");
+                    InputLocation fieldValue = (InputLocation) field.get(modelObject);
+                    if (fieldValue != null) {
+                        locations.put(fieldName, fieldValue);
+                    }
+                }
+            }
+        } catch (final SecurityException e) {
+            throw new IllegalArgumentException("Failed to get InputLocation field on object of type " + klass, e);
+        } catch (final IllegalArgumentException e) {
+            throw new IllegalArgumentException("Failed to get InputLocation field on object of type " + klass, e);
+        } catch (final IllegalAccessException e) {
+            throw new IllegalArgumentException("Failed to get InputLocation field on object of type " + klass, e);
+        }
         try {
             final Field field = klass.getDeclaredField("locations");
             field.setAccessible(true);
 
-            final Map<Object, InputLocation> locations = new HashMap();
             final Map<Object, InputLocation> locationsFieldValue = (Map) field.get(modelObject);
-            for (Map.Entry<Object, InputLocation> entry : locationsFieldValue.entrySet()) {
-                if (entry.getValue() != null) {
-                    locations.put(entry.getKey(), entry.getValue());
-                } else {
-                    log.warn("Unable to determine location for " + entry.getKey());
+            if (locationsFieldValue != null) {
+                for (Map.Entry<Object, InputLocation> entry : locationsFieldValue.entrySet()) {
+                    if (entry.getValue() != null) {
+                        locations.put(entry.getKey(), entry.getValue());
+                    } else {
+                        log.warn("Unable to determine location for " + entry.getKey());
+                    }
                 }
             }
             return locations;

@@ -54,7 +54,7 @@
     </prerequisites>
 
     <properties>
-        <maven.version>3.0</maven.version>
+        <maven.version>3.6.3</maven.version>
         <spring.version>3.1.1.RELEASE</spring.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -74,7 +74,7 @@
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>3.0.22</version>
+            <version>3.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
@@ -247,7 +247,7 @@
                         <reportPlugins>
                             <plugin>
                                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                                <version>2.2</version>
+                                <version>2.7</version>
                                 <configuration>
                                     <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
                                     <dependencyDetailsEnabled>false</dependencyDetailsEnabled>

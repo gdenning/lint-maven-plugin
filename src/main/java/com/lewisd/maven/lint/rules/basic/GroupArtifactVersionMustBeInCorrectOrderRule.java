@@ -65,11 +65,12 @@ public class GroupArtifactVersionMustBeInCorrectOrderRule extends AbstractRule {
 		final Collection<Object> objectsToCheck = modelUtil.findGAVObjects(mavenProject);
 
 		for (final Object object: objectsToCheck) {
-			final List<String> sortOrder = findSortOrder(object.getClass());
+			final List<String> expectedFieldsInOrder = getExpectedFieldsInOrder(object.getClass());
 			final Map<Object, InputLocation> locations = modelUtil.getLocations(object);
 
 			// We don't need the location of the outer element for this rule
 			locations.remove("");
+			locations.remove("location");
 
 			// Sort the locations by their location in the file
 			final SortedMap<InputLocation, Object> actualOrderedElements = new TreeMap<InputLocation, Object>(new InputLocationMapValueComparator());
@@ -80,7 +81,7 @@ public class GroupArtifactVersionMustBeInCorrectOrderRule extends AbstractRule {
 
 			final List<Object> expectedOrderElements = new LinkedList<Object>();
 			// First, find the elements that do exist, for which we care about the order
-			for (final String location : sortOrder) {
+			for (final String location : expectedFieldsInOrder) {
 				if (locations.containsKey(location)) {
 					expectedOrderElements.add(location);
 				}
@@ -113,7 +114,7 @@ public class GroupArtifactVersionMustBeInCorrectOrderRule extends AbstractRule {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private List<String> findSortOrder(Class<?> klass) {
+	private List<String> getExpectedFieldsInOrder(Class<?> klass) {
 		for (Class potentialClass : expectedOrderByClass.keySet()) {
 			if (potentialClass.isAssignableFrom(klass)) {
 				return expectedOrderByClass.get(potentialClass);
