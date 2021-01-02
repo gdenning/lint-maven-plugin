@@ -15,7 +15,7 @@
     <name>Maven POM lint plugin</name>
     <description>Generates a report of suspicious/inconsistent POM elements, and optionally fails the build if violations are found.</description>
 
-    <url>https://github.com/lewisd32/lint-maven-plugin</url>
+    <url>https://github.com/gdenning/lint-maven-plugin</url>
 
     <licenses>
         <license>
@@ -26,9 +26,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/lewisd32/lint-maven-plugin</url>
-        <connection>scm:git:git@github.com:lewisd32/lint-maven-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:lewisd32/lint-maven-plugin.git</developerConnection>
+        <url>https://github.com/gdenning/lint-maven-plugin</url>
+        <connection>scm:git:git@github.com:gdenning/lint-maven-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:gdenning/lint-maven-plugin.git</developerConnection>
     </scm>
 
     <distributionManagement>
@@ -46,6 +46,11 @@
             <id>lewisd32</id>
             <name>Derek Lewis</name>
             <email>github@lewisd.com</email>
+        </developer>
+        <developer>
+            <id>gdenning</id>
+            <name>Geoff Denning</name>
+            <email>gdenning@gmail.com</email>
         </developer>
     </developers>
 
